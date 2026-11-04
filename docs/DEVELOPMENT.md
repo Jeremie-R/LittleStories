@@ -38,14 +38,15 @@ Deleting someone deletes the stories that were only theirs; stories shared with 
 ### 1. Project and tables
 
 1. Create a project at [supabase.com](https://supabase.com) (the free plan is plenty). Pick a region close to you.
-2. **SQL Editor → New query**: paste `supabase/schema.sql` and run it. It creates `people`, `stories` and `profiles` (one JSON document per row, so new fields never need a migration), row-level security so each person only sees their own rows, and the private `photos` bucket.
+2. **SQL Editor → New query**: paste the contents of `supabase/schema.sql` and run it. It creates `people`, `stories` and `profiles` (one JSON document per row, so new fields never need a migration), row-level security so each person only sees their own rows, and the private `photos` bucket.
 3. **Project Settings → API Keys**: copy the project URL and the publishable key into `.env.local` (see `.env.example`) and into the Vercel project's environment variables:
    ```
    VITE_SUPABASE_URL=https://dydywowsexvxmaiuqlvi.supabase.co
    VITE_SUPABASE_KEY=sb_publishable_…
    ```
    These are built into the JavaScript, so a change only takes effect after a new deploy. The publishable key is meant for the browser (row-level security protects the data). Never give a `VITE_` name to anything secret, such as the `service_role` key or Google's client secret.
-4. **Authentication → URL Configuration**:
+4. **Authentication → Sign In / Providers**: leave "Allow anonymous sign-ins" off. The app doesn't use it ("Try it without an account" stays on the device), and it would let anyone create throwaway accounts.
+5. **Authentication → URL Configuration**:
    - Site URL: `https://littlestories.app.roberrini.com`
    - Redirect URLs: `https://littlestories.app.roberrini.com/**`, `https://little-stories-wcn2.vercel.app/**`, `http://localhost:5174/**`
 
@@ -65,7 +66,11 @@ Google's consent screen says "continue to `dydywowsexvxmaiuqlvi.supabase.co`". S
 
 Supabase sends a sign-in **link** by default. The app asks for the **code** instead, because a link opened from the mail app lands in the browser, not in the installed app.
 
-1. **Authentication → Emails → Templates**: in both **Magic link** and **Confirm signup**, show the code. For example:
+1. **Custom SMTP first.** Supabase's built-in mailer only delivers to the project's team members, a few emails an hour, and the templates can't be edited until custom SMTP is set. Use [Resend](https://resend.com) (free: 3,000 emails a month):
+   - Add the domain `roberrini.com` (or a subdomain like `mail.roberrini.com`) in Resend and create the DNS records it lists (TXT for SPF and DKIM, MX for bounces) in OVH's DNS zone.
+   - Supabase → **Authentication → Emails → SMTP Settings**: host `smtp.resend.com`, port `465`, user `resend`, password = a Resend API key, sender e.g. `Little Stories <hello@roberrini.com>`.
+   - Raise **Authentication → Rate Limits → emails per hour** to something like 30.
+2. **Authentication → Emails → Templates**: in both **Magic link or OTP** and **Confirm sign up**, show the code. For example:
    ```html
    <h2>Your Little Stories code</h2>
    <p>Enter this code to sign in:</p>
@@ -73,11 +78,7 @@ Supabase sends a sign-in **link** by default. The app asks for the **code** inst
    <p>It expires in an hour. If you didn't ask for it, you can ignore this email.</p>
    ```
    (Subject, e.g.: `{{ .Token }} is your Little Stories code`.)
-2. **Authentication → Sign In / Providers → Email**: keep "Email OTP length" at 6 (it must match `CODE_LENGTH` in `src/data/config.ts`).
-3. **Custom SMTP (needed for real use).** Supabase's built-in mailer only delivers to the project's team members, a few emails an hour. Use [Resend](https://resend.com) (free: 3,000 emails a month):
-   - Add the domain `roberrini.com` (or a subdomain like `mail.roberrini.com`) in Resend and create the DNS records it lists (TXT for SPF and DKIM, MX for bounces) in OVH's DNS zone.
-   - Supabase → **Project Settings → Authentication → SMTP Settings**: host `smtp.resend.com`, port `465`, user `resend`, password = a Resend API key, sender e.g. `Little Stories <hello@roberrini.com>`.
-   - Raise **Authentication → Rate Limits → emails per hour** to something like 30.
+3. **Authentication → Sign In / Providers → Email**: keep "Email OTP length" at 6 (it must match `CODE_LENGTH` in `src/data/config.ts`).
 
 Current project: `dydywowsexvxmaiuqlvi`, live at https://littlestories.app.roberrini.com (also https://little-stories-wcn2.vercel.app).
 

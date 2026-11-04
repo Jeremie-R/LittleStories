@@ -1,5 +1,5 @@
 -- Little Stories: tables, row-level security and photo storage.
--- Run once in the Supabase dashboard (SQL Editor → New query → paste → Run). Safe to re-run.
+-- Paste this whole file into the Supabase dashboard (SQL Editor → New query → Run). Safe to re-run.
 --
 -- Each person and story is stored as a JSON document (the app's own types in src/lib/types.ts),
 -- so adding a field to the app never needs a migration here.
@@ -26,6 +26,11 @@ create table if not exists public.profiles (
   data jsonb not null,
   updated_at timestamptz not null default now()
 );
+
+-- Nobody reaches the journal without signing in. Signed-in users get row access through the
+-- API, limited to their own rows by the policies below. (Supabase's defaults grant more.)
+revoke all on table public.people, public.stories, public.profiles from anon, authenticated;
+grant select, insert, update, delete on table public.people, public.stories, public.profiles to authenticated;
 
 alter table public.people enable row level security;
 alter table public.stories enable row level security;
@@ -68,3 +73,6 @@ create policy "own photos: replace" on storage.objects for update to authenticat
 drop policy if exists "own photos: delete" on storage.objects;
 create policy "own photos: delete" on storage.objects for delete to authenticated
   using (bucket_id = 'photos' and (storage.foldername(name))[1] = (select auth.uid())::text);
+
+-- Make the API see the new tables straight away.
+notify pgrst, 'reload schema';
