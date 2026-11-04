@@ -45,7 +45,7 @@ Deleting someone deletes the stories that were only theirs; stories shared with 
    VITE_SUPABASE_KEY=sb_publishable_…
    ```
    These are built into the JavaScript, so a change only takes effect after a new deploy. The publishable key is meant for the browser (row-level security protects the data). Never give a `VITE_` name to anything secret, such as the `service_role` key or Google's client secret.
-4. **Authentication → Sign In / Providers**: leave "Allow anonymous sign-ins" off. The app doesn't use it ("Try it without an account" stays on the device), and it would let anyone create throwaway accounts.
+4. **Authentication → Sign In / Providers**: leave "Allow anonymous sign-ins" off. The app doesn't use it ("Try it without an account" stays on the device), and it would let anyone create throwaway accounts. Keep "Confirm email" on: without it, anyone could sign up with someone else's address and Supabase would mark it as confirmed.
 5. **Authentication → URL Configuration**:
    - Site URL: `https://littlestories.app.roberrini.com`
    - Redirect URLs: `https://littlestories.app.roberrini.com/**`, `https://little-stories-wcn2.vercel.app/**`, `http://localhost:5174/**`
@@ -67,8 +67,8 @@ Google's consent screen says "continue to `dydywowsexvxmaiuqlvi.supabase.co`". S
 Supabase sends a sign-in **link** by default. The app asks for the **code** instead, because a link opened from the mail app lands in the browser, not in the installed app.
 
 1. **Custom SMTP first.** Supabase's built-in mailer only delivers to the project's team members, a few emails an hour, and the templates can't be edited until custom SMTP is set. Use [Resend](https://resend.com) (free: 3,000 emails a month):
-   - Add the domain `roberrini.com` (or a subdomain like `mail.roberrini.com`) in Resend and create the DNS records it lists (TXT for SPF and DKIM, MX for bounces) in OVH's DNS zone.
-   - Supabase → **Authentication → Emails → SMTP Settings**: host `smtp.resend.com`, port `465`, user `resend`, password = a Resend API key, sender e.g. `Little Stories <hello@roberrini.com>`.
+   - Add the domain `app.roberrini.com` in Resend (region Ireland, the same as the Supabase project) and copy the DNS records it lists into OVH's DNS zone exactly (a DKIM TXT and two CNAMEs, `send.app` and `rsend.app`, at the time of writing), plus a `_dmarc.app` TXT. Skip the "receiving" MX: nothing receives mail at this domain. Add records only; don't change the mail records already in the zone. Keep sending off `roberrini.com` itself, which holds the OVH mailboxes, and off `mail.roberrini.com`, which is OVH's webmail.
+   - Supabase → **Authentication → Emails → SMTP Settings**: host `smtp.resend.com`, port `465`, user `resend`, password = a Resend API key, sender email `hello@app.roberrini.com`, sender name `Little Stories`.
    - Raise **Authentication → Rate Limits → emails per hour** to something like 30.
 2. **Authentication → Emails → Templates**: in both **Magic link or OTP** and **Confirm sign up**, show the code. For example:
    ```html
