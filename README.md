@@ -7,7 +7,7 @@
 A private journal of the people you've shared your life with,<br>
 and the little stories you lived together.
 
-**[Open Little Stories →](https://stories.app.roberrini.com)**
+**[Open Little Stories →](https://littlestories.app.roberrini.com)**
 
 </div>
 

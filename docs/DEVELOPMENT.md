@@ -41,24 +41,25 @@ Deleting someone deletes the stories that were only theirs; stories shared with 
 2. **SQL Editor → New query**: paste `supabase/schema.sql` and run it. It creates `people`, `stories` and `profiles` (one JSON document per row, so new fields never need a migration), row-level security so each person only sees their own rows, and the private `photos` bucket.
 3. **Project Settings → API Keys**: copy the project URL and the publishable key into `.env.local` (see `.env.example`) and into the Vercel project's environment variables:
    ```
-   VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+   VITE_SUPABASE_URL=https://dydywowsexvxmaiuqlvi.supabase.co
    VITE_SUPABASE_KEY=sb_publishable_…
    ```
+   These are built into the JavaScript, so a change only takes effect after a new deploy. The publishable key is meant for the browser (row-level security protects the data). Never give a `VITE_` name to anything secret, such as the `service_role` key or Google's client secret.
 4. **Authentication → URL Configuration**:
-   - Site URL: `https://stories.app.roberrini.com`
-   - Redirect URLs: `https://stories.app.roberrini.com/**`, `http://localhost:5174/**` (and your Vercel preview domain, e.g. `https://*-<team>.vercel.app/**`, to sign in on previews).
+   - Site URL: `https://littlestories.app.roberrini.com`
+   - Redirect URLs: `https://littlestories.app.roberrini.com/**`, `https://little-stories-wcn2.vercel.app/**`, `http://localhost:5174/**`
 
 > Free projects pause after a week without any activity. Opening the app counts; if it does pause, restore it from the dashboard (nothing is lost).
 
 ### 2. Google sign-in
 
 1. [Google Cloud Console](https://console.cloud.google.com) → **Google Auth Platform → Clients → Create client → Web application**.
-   - Authorized JavaScript origins: `https://stories.app.roberrini.com`, `http://localhost:5174`
-   - Authorized redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`
+   - Authorized redirect URI: `https://dydywowsexvxmaiuqlvi.supabase.co/auth/v1/callback`. This is the one that matters: Google returns to Supabase, which then returns to the app. A missing or different value shows up as `redirect_uri_mismatch`.
+   - Authorized JavaScript origins: `https://littlestories.app.roberrini.com`, `https://little-stories-wcn2.vercel.app`, `http://localhost:5174`
 2. **Branding**: app name "Little Stories", support email, and `supabase.co` plus `roberrini.com` as authorized domains.
-3. Supabase → **Authentication → Sign In / Providers → Google**: enable it and paste the client ID and secret.
+3. Supabase → **Authentication → Sign In / Providers → Google**: enable it and paste the client ID and secret. They belong here only: the app and Vercel never need them.
 
-Google's consent screen says "continue to `<project-ref>.supabase.co`". Showing our own domain there needs Supabase's custom domain add-on (paid).
+Google's consent screen says "continue to `dydywowsexvxmaiuqlvi.supabase.co`". Showing our own domain there needs Supabase's custom domain add-on (paid).
 
 ### 3. Sign-in code by email
 
@@ -78,21 +79,23 @@ Supabase sends a sign-in **link** by default. The app asks for the **code** inst
    - Supabase → **Project Settings → Authentication → SMTP Settings**: host `smtp.resend.com`, port `465`, user `resend`, password = a Resend API key, sender e.g. `Little Stories <hello@roberrini.com>`.
    - Raise **Authentication → Rate Limits → emails per hour** to something like 30.
 
+Current project: `dydywowsexvxmaiuqlvi`, live at https://littlestories.app.roberrini.com (also https://little-stories-wcn2.vercel.app).
+
 ## Deploying (Vercel)
 
 `vercel.json` handles SPA routing and cache headers (hashed assets are immutable, `sw.js` is never cached). In Vercel: **Add New → Project → import the GitHub repo**. The Vite preset is detected; the build runs `bun run build` and publishes `dist/`. Add the two `VITE_SUPABASE_*` variables. Every push to `main` deploys.
 
 ### Subdomain on OVH
 
-1. Vercel → the project → **Settings → Domains → Add** `stories.app.roberrini.com`. Vercel shows the CNAME target to use.
-2. OVH → **Web Cloud → Domain names → roberrini.com → DNS zone → Add an entry → CNAME**: subdomain `stories.app`, target the value Vercel gave (with a trailing dot). DNS usually takes a few minutes; Vercel issues the certificate on its own.
+1. Vercel → the project → **Settings → Domains → Add** `littlestories.app.roberrini.com`. Vercel shows the CNAME target to use.
+2. OVH → **Web Cloud → Domain names → roberrini.com → DNS zone → Add an entry → CNAME**: subdomain `littlestories.app`, target the value Vercel gave (with a trailing dot). DNS usually takes a few minutes; Vercel issues the certificate on its own.
 3. Back in Supabase and Google, make sure the domain is in the redirect URLs and JavaScript origins listed above.
 
 ## Android
 
 The web app is a complete PWA: manifest with `any` and `maskable` icons, standalone display, portrait orientation, "Write a story" and "Add someone" shortcuts, and a service worker for offline use.
 
-As for Workout Journal, the recommended wrapper is a **Trusted Web Activity** generated with [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap): `npx @bubblewrap/cli init --manifest https://stories.app.roberrini.com/manifest.webmanifest`, then `bubblewrap build`. Copy `android/assetlinks.template.json` to `public/.well-known/assetlinks.json` with the package name and the signing key's SHA-256, then redeploy. Google sign-in and the email code work unchanged inside it.
+As for Workout Journal, the recommended wrapper is a **Trusted Web Activity** generated with [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap): `npx @bubblewrap/cli init --manifest https://littlestories.app.roberrini.com/manifest.webmanifest`, then `bubblewrap build`. Copy `android/assetlinks.template.json` to `public/.well-known/assetlinks.json` with the package name and the signing key's SHA-256, then redeploy. Google sign-in and the email code work unchanged inside it.
 
 ## Design
 
