@@ -118,7 +118,7 @@ export function Stories() {
           {data.stories.length > 5 && (
             <label className="search search--page">
               <Icon name="search" size={20} />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search stories, people, tags" aria-label="Search stories" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search stories, people, words" aria-label="Search stories" />
             </label>
           )}
 

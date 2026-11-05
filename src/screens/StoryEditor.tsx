@@ -112,8 +112,8 @@ export function StoryEditor() {
       </section>
 
       <section className="form-card">
-        <h2 className="form-card__title">Tags</h2>
-        <TagInput label="Tags" value={draft.tags} onChange={(tags) => set({ tags })} known={known} />
+        <h2 className="form-card__title">In a few words</h2>
+        <TagInput label="In a few words" value={draft.tags} onChange={(tags) => set({ tags })} known={known} />
       </section>
 
       {existing && (

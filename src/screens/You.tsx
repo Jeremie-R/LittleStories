@@ -3,25 +3,16 @@ import { Link } from 'react-router'
 import { useAuth } from '../auth/AuthProvider'
 import { ImportBanner, MeAvatar, useMyName } from '../components/Account'
 import { Avatar } from '../components/Avatar'
-import { CountryField } from '../components/CountryField'
 import { DateField } from '../components/DateField'
 import { useConfirm } from '../components/Feedback'
 import { HeartMeter } from '../components/HeartMeter'
 import { Icon } from '../components/Icon'
 import { Sheet } from '../components/Sheet'
 import { pendingChanges, saveProfile, useData } from '../data/store'
-import { countryName, flag } from '../lib/countries'
-import { dayKey, formatDuration, parseDay } from '../lib/dates'
+import { ageOn, dayKey, formatDuration } from '../lib/dates'
 import { useAutosize } from '../lib/hooks'
 import { computeStats } from '../lib/journal'
 import type { Data, Profile } from '../lib/types'
-
-function age(birthday: string): number {
-  const born = parseDay(birthday)
-  const now = new Date()
-  const had = now.getMonth() > born.getMonth() || (now.getMonth() === born.getMonth() && now.getDate() >= born.getDate())
-  return now.getFullYear() - born.getFullYear() - (had ? 0 : 1)
-}
 
 function download(data: Data) {
   const blob = new Blob([JSON.stringify({ app: 'Little Stories', version: __APP_VERSION__, exportedAt: new Date().toISOString(), ...data }, null, 2)], {
@@ -43,8 +34,6 @@ export function You() {
   const stats = useMemo(() => computeStats(data), [data])
   const [editing, setEditing] = useState(false)
   const { profile } = data
-
-  const details = [profile.birthday && `${age(profile.birthday)} years old`, profile.country && `${flag(profile.country)} ${countryName(profile.country)}`].filter(Boolean)
 
   const leave = async () => {
     if (state.status === 'signedIn') {
@@ -80,7 +69,7 @@ export function You() {
           <MeAvatar size={72} />
           <div className="me-card__who">
             <h2 className="me-card__name">{name || 'You'}</h2>
-            {details.length > 0 && <p className="me-card__details">{details.join(' · ')}</p>}
+            {profile.birthday && <p className="me-card__details">{ageOn(profile.birthday)} years old</p>}
           </div>
           <button className="icon-btn" onClick={() => setEditing(true)} aria-label="Edit about you">
             <Icon name="pencil" />
@@ -119,8 +108,8 @@ export function You() {
 
       {stats.topTags.length > 0 && (
         <section className="chart-card">
-          <h3 className="chart-card__title">Moods</h3>
-          <p className="chart-card__sub">Your most used tags, across people and stories</p>
+          <h3 className="chart-card__title">Your words</h3>
+          <p className="chart-card__sub">The words you use most, for people and stories</p>
           <div className="pill-bars">
             {stats.topTags.map((t, i) => (
               <div key={t.tag} className="pill-bar">
@@ -240,11 +229,9 @@ export function You() {
 }
 
 function ProfileSheet({ profile, onClose }: { profile: Profile; onClose: () => void }) {
-  const data = useData()!
   const [draft, setDraft] = useState<Profile>(profile)
   const about = useAutosize(draft.about ?? '')
   const set = (patch: Partial<Profile>) => setDraft((d) => ({ ...d, ...patch }))
-  const countries = [...data.people, ...data.stories].flatMap((x) => (x.country ? [x.country] : []))
 
   const save = () => {
     saveProfile({ ...draft, name: draft.name?.trim() || undefined, about: draft.about?.trim() || undefined })
@@ -266,7 +253,6 @@ function ProfileSheet({ profile, onClose }: { profile: Profile; onClose: () => v
         <input className="input" placeholder="Your name" aria-label="Your name" value={draft.name ?? ''} onChange={(e) => set({ name: e.target.value })} />
         <div className="form-card form-card--flat">
           <DateField label="Birthday" value={draft.birthday} onChange={(birthday) => set({ birthday })} placeholder="Add" clearable />
-          <CountryField label="Home" value={draft.country} onChange={(country) => set({ country })} used={countries} />
         </div>
         <textarea
           ref={about}

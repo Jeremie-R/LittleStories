@@ -8,5 +8,6 @@ export const supabaseConfig = url && key ? { url, key } : null
 
 export const cloudEnabled = supabaseConfig !== null
 
-/** Digits in the email sign-in code (Supabase → Authentication → Providers → Email → OTP length). */
-export const CODE_LENGTH = 6
+/** Digits Supabase can put in an email sign-in code. The exact length is a project setting. */
+export const CODE_MIN = 6
+export const CODE_MAX = 10

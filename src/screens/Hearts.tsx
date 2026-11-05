@@ -8,7 +8,7 @@ import { Icon } from '../components/Icon'
 import { Scene } from '../components/Scene'
 import { useData } from '../data/store'
 import { countryName, flag } from '../lib/countries'
-import { formatRange } from '../lib/dates'
+import { ageOn, formatRange } from '../lib/dates'
 import { groupPeople, storyCounts } from '../lib/journal'
 import type { Person } from '../lib/types'
 
@@ -72,7 +72,7 @@ export function Hearts() {
           {data.people.length > 5 && (
             <label className="search search--page">
               <Icon name="search" size={20} />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search names, tags, countries" aria-label="Search hearts" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search names, words, countries" aria-label="Search hearts" />
             </label>
           )}
 
@@ -101,7 +101,10 @@ function PersonCard({ person, stories }: { person: Person; stories: number }) {
     <Link to={`/people/${person.id}`} className="person-card">
       <Avatar person={person} size={60} />
       <span className="person-card__body">
-        <span className="person-card__name">{person.name || 'Someone'}</span>
+        <span className="person-card__name">
+          {person.name || 'Someone'}
+          {person.born && <span className="person-card__age">, {ageOn(person.born, person.start)}</span>}
+        </span>
         {(range || person.country) && (
           <span className="person-card__meta">
             {person.country && <span className="person-card__flag">{flag(person.country)}</span>}

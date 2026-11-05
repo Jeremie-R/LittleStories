@@ -243,6 +243,8 @@
   height: 30px;
   padding: 0 13px;
   border: 0;
+  max-width: 100%;
+  overflow: hidden;
   border-radius: 999px;
   background: var(--surface);
   box-shadow: inset 0 0 0 1px var(--line-strong);
@@ -272,6 +274,12 @@
   color: var(--ink-2);
 }
 
+.chip--add {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  color: var(--ink-2);
+}
+
 .chip-row {
   display: flex;
   gap: 8px;
@@ -283,17 +291,6 @@
 
 .chip-row--center {
   justify-content: center;
-}
-
-.chip-row--scroll {
-  margin: 0 -18px;
-  padding: 0 18px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.chip-row--scroll::-webkit-scrollbar {
-  display: none;
 }
 
 .avatar {
@@ -668,6 +665,18 @@
   color: var(--ink-3);
 }
 
+.age-input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding: 0 10px 0 0;
+  border: 0;
+  background: none;
+  font: 600 16px var(--font);
+  outline: none;
+  text-align: right;
+}
+
 .date-field__input {
   position: absolute;
   inset: 0;
@@ -784,30 +793,16 @@
 
 /* ---------- Tags and people pickers ---------- */
 
-.tag-input__box {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  min-height: 52px;
-  padding: 10px;
-  border-radius: var(--radius-sm);
-  background: var(--sunken);
-}
-
-.tag-input__field {
-  flex: 1 1 140px;
-  min-width: 120px;
-  height: 32px;
-  padding: 0 6px;
-  border: 0;
-  background: none;
-  font: 500 15px var(--font);
-  outline: none;
-}
-
-.tag-input__suggestions {
+.tag-quick {
   margin-top: 10px;
+}
+
+.tag-sheet {
+  min-height: 46dvh;
+}
+
+.tag-sheet__new {
+  margin-top: 12px;
 }
 
 .people-field {

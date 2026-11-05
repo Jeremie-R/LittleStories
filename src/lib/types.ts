@@ -11,6 +11,8 @@ export interface Person {
   start?: string
   end?: string
   about?: string
+  /** "YYYY-MM-DD", or just "YYYY" when you only know roughly how old they were. */
+  born?: string
   /** ISO 3166-1 alpha-2 country code, e.g. "FR". */
   country?: string
   /** 1–10, shown as one heart filled to that level. */
@@ -18,6 +20,9 @@ export interface Person {
   tags: string[]
   /** Handle without the @. */
   instagram?: string
+  /** Profile links. */
+  facebook?: string
+  linkedin?: string
   phone?: string
   createdAt: number
   updatedAt: number
@@ -44,7 +49,6 @@ export interface Story {
 export interface Profile {
   name?: string
   birthday?: string
-  country?: string
   about?: string
   updatedAt?: number
 }

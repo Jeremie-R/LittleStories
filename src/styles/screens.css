@@ -154,11 +154,16 @@
   margin-right: 6px;
 }
 
+.person-card__age {
+  color: var(--ink-2);
+  font-weight: 500;
+}
+
 .person-card__tags {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   margin-top: 4px;
-  overflow: hidden;
 }
 
 .person-card__side {
@@ -225,6 +230,11 @@
 .profile__date {
   color: var(--accent-text);
   font: 700 14px/1.3 var(--font);
+}
+
+.profile__age {
+  color: var(--ink-2);
+  font: 500 15px/1.3 var(--font);
 }
 
 .profile .chip-row {

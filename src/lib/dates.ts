@@ -51,6 +51,12 @@ export function formatRange(start?: string, end?: string, short = false): string
   return short ? `${monthFormat.format(a)} – ${monthFormat.format(b)}` : `${dayShortFormat.format(a)} – ${dayShortFormat.format(b)}`
 }
 
+/** Age on a day (today by default). `born` is a date, or only a year for a rough age. */
+export function ageOn(born: string, day: string = dayKey()): number {
+  const years = Number(day.slice(0, 4)) - Number(born.slice(0, 4))
+  return born.length > 4 && day.slice(5) < born.slice(5) ? years - 1 : years
+}
+
 /** Whole days from start to end (or today, while it's still going), counting both ends. */
 export function daysBetween(start: string, end?: string): number {
   const ms = parseDay(end ?? dayKey()).getTime() - parseDay(start).getTime()

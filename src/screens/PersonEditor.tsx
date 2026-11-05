@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
+import { AgeField, ageDraft, bornFrom, type AgeDraft } from '../components/AgeField'
 import { CountryField } from '../components/CountryField'
 import { DateField } from '../components/DateField'
 import { useConfirm } from '../components/Feedback'
@@ -10,20 +11,13 @@ import { Segmented } from '../components/Segmented'
 import { TagInput } from '../components/TagInput'
 import { deletePerson, savePerson, useData } from '../data/store'
 import { useAutosize, useBack } from '../lib/hooks'
+import { facebookLink, instagramHandle, linkedinLink } from '../lib/links'
 import { usedTags } from '../lib/tags'
 import { newId, type Person } from '../lib/types'
 
 type When = 'while' | 'day'
 
-/** "@name", "instagram.com/name/" or "name" → "name" */
-const handle = (raw?: string) =>
-  raw
-    ?.trim()
-    .replace(/^(https?:\/\/)?(www\.)?instagram\.com\//i, '')
-    .replace(/^@/, '')
-    .replace(/[/?].*$/, '') || undefined
-
-function tidy(draft: Person, when: When): Person {
+function tidy(draft: Person, when: When, age: AgeDraft): Person {
   let { start, end } = draft
   if (when === 'day') end = start
   // Dates entered the wrong way round: swap them rather than complain.
@@ -34,7 +28,10 @@ function tidy(draft: Person, when: When): Person {
     about: draft.about?.trim() || undefined,
     start: start || undefined,
     end: end || undefined,
-    instagram: handle(draft.instagram),
+    born: bornFrom(age, start),
+    instagram: instagramHandle(draft.instagram),
+    facebook: facebookLink(draft.facebook),
+    linkedin: linkedinLink(draft.linkedin),
     phone: draft.phone?.trim() || undefined,
   }
 }
@@ -50,6 +47,7 @@ export function PersonEditor() {
 
   const [draft, setDraft] = useState<Person>(() => existing ?? { id: newId(), name: '', tags: [], createdAt: Date.now(), updatedAt: Date.now() })
   const [when, setWhen] = useState<When>(existing?.start && existing.start === existing.end ? 'day' : 'while')
+  const [age, setAge] = useState<AgeDraft>(() => ageDraft(existing?.born, existing?.start))
   const about = useAutosize(draft.about ?? '')
   const known = useMemo(() => usedTags(data), [data])
   const countries = useMemo(() => [...data.people, ...data.stories].flatMap((x) => (x.country ? [x.country] : [])), [data])
@@ -59,7 +57,7 @@ export function PersonEditor() {
   const set = (patch: Partial<Person>) => setDraft((d) => ({ ...d, ...patch }))
 
   const save = () => {
-    const person = tidy(draft, when)
+    const person = tidy(draft, when, age)
     drafts.keep(person.photo ? [person.photo] : [])
     savePerson(person)
     if (existing) back()
@@ -131,6 +129,11 @@ export function PersonEditor() {
       </section>
 
       <section className="form-card">
+        <h2 className="form-card__title">Age</h2>
+        <AgeField value={age} onChange={setAge} met={draft.start} />
+      </section>
+
+      <section className="form-card">
         <CountryField label="Where they’re from" value={draft.country} onChange={(country) => set({ country })} used={countries} />
       </section>
 
@@ -140,8 +143,8 @@ export function PersonEditor() {
       </section>
 
       <section className="form-card">
-        <h2 className="form-card__title">Tags</h2>
-        <TagInput label="Tags" value={draft.tags} onChange={(tags) => set({ tags })} known={known} />
+        <h2 className="form-card__title">In a few words</h2>
+        <TagInput label="In a few words" value={draft.tags} onChange={(tags) => set({ tags })} known={known} />
       </section>
 
       <section className="form-card">
@@ -161,6 +164,14 @@ export function PersonEditor() {
         <label className="input-row">
           <Icon name="instagram" />
           <input placeholder="Instagram handle" value={draft.instagram ?? ''} onChange={(e) => set({ instagram: e.target.value })} autoCapitalize="none" autoComplete="off" />
+        </label>
+        <label className="input-row">
+          <Icon name="facebook" />
+          <input placeholder="Facebook profile link" value={draft.facebook ?? ''} onChange={(e) => set({ facebook: e.target.value })} inputMode="url" autoCapitalize="none" autoComplete="off" />
+        </label>
+        <label className="input-row">
+          <Icon name="linkedin" />
+          <input placeholder="LinkedIn profile link" value={draft.linkedin ?? ''} onChange={(e) => set({ linkedin: e.target.value })} inputMode="url" autoCapitalize="none" autoComplete="off" />
         </label>
         <label className="input-row">
           <Icon name="phone" />

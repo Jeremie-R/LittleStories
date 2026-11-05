@@ -19,17 +19,17 @@ Without Supabase env vars the app runs in **device-only mode**: "Try it without 
 |---|---|
 | App | Vite + React 19 + TypeScript, React Router, plain CSS (tokens in `src/styles/base.css`), Plus Jakarta Sans |
 | Data | `src/data/backend.ts` interface with two implementations: `localBackend.ts` (device) and `supabase.ts` (signed in). Screens only use `src/data/store.ts`. |
-| Sign-in | Supabase Auth: Google (redirect) and a 6-digit code by email. Loaded lazily, only when configured (`src/auth/AuthProvider.tsx`). |
+| Sign-in | Supabase Auth: Google (redirect) and a code by email (the code screen takes 6 to 10 digits, so it follows the project's OTP length). Loaded lazily, only when configured (`src/auth/AuthProvider.tsx`). |
 | Photos | Compressed in the browser (`src/data/photos.ts`): 1600 px WebP for stories, 720 px square for avatars, JPEG where the browser can't write WebP. Kept in IndexedDB, uploaded to a private Supabase Storage bucket when saved. |
 | Offline | `sw.template.js` → `dist/sw.js` precaches the app shell and icons. Signed in, the journal is cached in localStorage and changes wait in an outbox until they're saved, so the app works without signal. |
 | Map | `src/components/WorldMap.tsx`: Natural Earth 1:50m countries (`world-atlas`), Equal Earth projection (`d3-geo`), pinch/drag zoom (`d3-zoom`). The map screen and its 750 kB of shapes load only when the Map tab is opened. |
 
 Data model (`src/lib/types.ts`):
-- **Person** ("a heart" in the app): name, photo, start and end dates (the same day twice = one day, no end = still going), about, country, rating 1–10, tags, Instagram, phone.
+- **Person** ("a heart" in the app): name, photo, start and end dates (the same day twice = one day, no end = still going), when they were born (`born`: a date, or only a year worked out from a rough age), about, country, rating 1–10, tags, Instagram, Facebook, LinkedIn, phone.
 - **Story**: date, optional title, text, country, tags, the people it's with (any number), photos.
 - **Profile**: what you write about yourself on the You tab.
 
-Tags are free text, shared between people and stories: the ones already used are suggested first, then a short list of ideas (`src/lib/tags.ts`).
+Tags are free text, shared between people and stories, and the app calls them "words" ("In a few words"). The ones already used are one tap away; "Add a word" opens a popup with those, a short list of ideas (`src/lib/tags.ts`) and a field for your own.
 
 Deleting someone deletes the stories that were only theirs; stories shared with others stay, without them.
 
@@ -75,10 +75,10 @@ Supabase sends a sign-in **link** by default. The app asks for the **code** inst
    <h2>Your Little Stories code</h2>
    <p>Enter this code to sign in:</p>
    <p style="font-size:28px;font-weight:700;letter-spacing:6px">{{ .Token }}</p>
-   <p>It expires in an hour. If you didn't ask for it, you can ignore this email.</p>
+   <p>Or <a href="{{ .ConfirmationURL }}">sign in with this link</a> on this device.</p>
+   <p>If you didn't ask for this, you can ignore this email.</p>
    ```
    (Subject, e.g.: `{{ .Token }} is your Little Stories code`.)
-3. **Authentication → Sign In / Providers → Email**: keep "Email OTP length" at 6 (it must match `CODE_LENGTH` in `src/data/config.ts`).
 
 Current project: `dydywowsexvxmaiuqlvi`, live at https://littlestories.app.roberrini.com (also https://little-stories-wcn2.vercel.app).
 

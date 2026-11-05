@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { useAuth } from '../auth/AuthProvider'
 import { GoogleMark, Icon } from '../components/Icon'
 import { Scene } from '../components/Scene'
-import { CODE_LENGTH } from '../data/config'
+import { CODE_MAX, CODE_MIN } from '../data/config'
 
 type Step = 'start' | 'email' | 'code'
 
@@ -58,7 +58,7 @@ export function Welcome({ upgrade = false }: { upgrade?: boolean }) {
   }
 
   const verify = (value: string) => {
-    if (value.length < CODE_LENGTH || busy) return
+    if (value.length < CODE_MIN || busy) return
     attempt(() => verifyEmailCode(email.trim(), value), 'code')
   }
 
@@ -116,7 +116,7 @@ export function Welcome({ upgrade = false }: { upgrade?: boolean }) {
       {step === 'email' && (
         <form className="welcome__body" onSubmit={sendCode}>
           <h2 className="title">Sign in with email</h2>
-          <p className="subtitle">We’ll send you a {CODE_LENGTH}-digit code. No password to remember.</p>
+          <p className="subtitle">We’ll send you a sign-in code. No password to remember.</p>
           <input
             className="input input--lg"
             type="email"
@@ -151,27 +151,23 @@ export function Welcome({ upgrade = false }: { upgrade?: boolean }) {
         >
           <h2 className="title">Check your inbox</h2>
           <p className="subtitle">
-            Enter the code we sent to <b>{email.trim()}</b>.
+            Enter the code we sent to <b>{email.trim()}</b>, or tap the link in the email.
           </p>
           <input
             className="input input--lg input--code"
             inputMode="numeric"
             autoComplete="one-time-code"
             pattern="[0-9]*"
-            maxLength={CODE_LENGTH}
-            placeholder={'•'.repeat(CODE_LENGTH)}
-            aria-label={`${CODE_LENGTH}-digit code`}
+            maxLength={CODE_MAX}
+            placeholder={'•'.repeat(CODE_MIN)}
+            aria-label="Sign-in code"
             value={code}
-            onChange={(e) => {
-              const next = e.target.value.replace(/\D/g, '').slice(0, CODE_LENGTH)
-              setCode(next)
-              verify(next)
-            }}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             autoFocus
           />
           {error && <p className="form-error" role="alert">{error}</p>}
           <div className="welcome__actions">
-            <button className="btn btn--primary btn--block btn--lg" disabled={busy || code.length < CODE_LENGTH}>
+            <button className="btn btn--primary btn--block btn--lg" disabled={busy || code.length < CODE_MIN}>
               {busy ? 'Signing in…' : 'Sign in'}
             </button>
             <button type="button" className="btn btn--ghost btn--block" onClick={() => sendCode()} disabled={busy || wait > 0}>

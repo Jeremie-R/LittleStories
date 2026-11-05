@@ -15,13 +15,13 @@ and the little stories you lived together.
 
 ## Hearts
 
-Everyone who's been part of your life, most recent first: a love, a crush, a summer, a friend. Give each of them a photo, the time you shared (one day, a while, or still going), where they're from, a few tags, how much they mean to you on a single heart that fills from 1 to 10, and a way to reach them (Instagram, phone).
+Everyone who's been part of your life, most recent first: a love, a crush, a summer, a friend. Give each of them a photo, the time you shared (one day, a while, or still going), how old they were when you met (a rough age or a birthday), where they're from, how much they mean to you on a single heart that fills from 1 to 10, a few words about them, and a way to reach them (Instagram, Facebook, LinkedIn, phone).
 
 Their page gathers everything: the stories you shared, newest first, and every photo from them.
 
 ## Stories
 
-The moments you want to remember: a date, a title if you like, what happened, who was there (one person, several, or no one), where it happened, tags and photos. The timeline is grouped by month, with a little calendar on top to jump to any month of any year.
+The moments you want to remember: a date, a title if you like, what happened, who was there (one person, several, or no one), where it happened, a few words and photos. The timeline is grouped by month, with a little calendar on top to jump to any month of any year.
 
 ## Map
 
@@ -29,11 +29,11 @@ A calm world map with each country grey, or coloured by how many people come fro
 
 ## You
 
-A few words about yourself, and your journal in numbers: hearts, stories, countries and photos, your most used tags, stories per year, your average heart, your longest story and the person you've shared the most with.
+A few words about yourself, and your journal in numbers: hearts, stories, countries and photos, the words you use most, stories per year, your average heart, your longest story and the person you've shared the most with.
 
 ## Sign in, or don't
 
-**Continue with Google**, or with **your email and a 6-digit code**: your journal is kept in your account, private to you, and in sync across your devices. Photos are compressed on your phone before they're uploaded.
+**Continue with Google**, or with **your email and a sign-in code**: your journal is kept in your account, private to you, and in sync across your devices. Photos are compressed on your phone before they're uploaded.
 
 Prefer not to sign in? **Try it without an account** and everything stays on your device. Sign in later and you can move it into your account with one tap.
 

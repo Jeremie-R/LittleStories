@@ -1,4 +1,4 @@
-import { daysBetween, monthKey } from './dates'
+import { ageOn, daysBetween, monthKey } from './dates'
 import type { Data, Person, Story } from './types'
 
 /** Number of accent colours (`.accent-0` … in components.css). */
@@ -15,6 +15,15 @@ export function initials(name: string): string {
   const words = name.trim().split(/\s+/).filter(Boolean)
   if (words.length === 0) return '?'
   return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase()
+}
+
+/** "27 when you met (30 today)", or "30 years old" without a first date. */
+export function ageLine({ born, start }: Pick<Person, 'born' | 'start'>): string {
+  if (!born) return ''
+  const today = ageOn(born)
+  if (!start) return `${today} years old`
+  const met = ageOn(born, start)
+  return met === today ? `${met} when you met` : `${met} when you met (${today} today)`
 }
 
 export interface PersonGroup {

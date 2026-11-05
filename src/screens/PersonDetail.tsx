@@ -11,7 +11,8 @@ import { useData } from '../data/store'
 import { countryName, flag } from '../lib/countries'
 import { daysBetween, formatDuration, formatRange } from '../lib/dates'
 import { useBack } from '../lib/hooks'
-import { accentOf, storiesOf } from '../lib/journal'
+import { accentOf, ageLine, storiesOf } from '../lib/journal'
+import { facebookLink, linkedinLink } from '../lib/links'
 
 export function PersonDetail() {
   const { id } = useParams()
@@ -26,7 +27,10 @@ export function PersonDetail() {
   const others = data.people.filter((p) => p.id !== person.id)
   const range = formatRange(person.start, person.end)
   const duration = person.start && person.end !== person.start ? formatDuration(daysBetween(person.start, person.end)) : null
+  const age = ageLine(person)
   const phone = person.phone?.replace(/[^\d+]/g, '')
+  const facebook = facebookLink(person.facebook)
+  const linkedin = linkedinLink(person.linkedin)
 
   return (
     <main className={`page page--detail accent-${accentOf(person.id)}`}>
@@ -43,6 +47,7 @@ export function PersonDetail() {
         <Avatar person={person} size={148} className="profile__avatar" />
         {range && <p className="profile__date">{range}</p>}
         <h1 className="title title--xl title--center">{person.name || 'Someone'}</h1>
+        {age && <p className="profile__age">{age}</p>}
         {person.tags.length > 0 && (
           <div className="chip-row chip-row--wrap chip-row--center">
             {person.tags.map((tag) => (
@@ -85,11 +90,23 @@ export function PersonDetail() {
         </section>
       )}
 
-      {(person.instagram || phone) && (
+      {(person.instagram || facebook || linkedin || phone) && (
         <div className="link-row">
           {person.instagram && (
             <a className="link-pill" href={`https://instagram.com/${person.instagram}`} target="_blank" rel="noreferrer">
               <Icon name="instagram" size={18} />@{person.instagram}
+            </a>
+          )}
+          {facebook && (
+            <a className="link-pill" href={facebook} target="_blank" rel="noreferrer">
+              <Icon name="facebook" size={18} />
+              Facebook
+            </a>
+          )}
+          {linkedin && (
+            <a className="link-pill" href={linkedin} target="_blank" rel="noreferrer">
+              <Icon name="linkedin" size={18} />
+              LinkedIn
             </a>
           )}
           {phone && (
