@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 1200px; height: 760px; overflow: hidden; }
+  body { position: relative; background: #ffc53d; }
+  .art { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .row { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 40px; }
+  .phone {
+    width: 300px; height: 649px; border-radius: 40px; overflow: hidden; background: #f3f1ec;
+    box-shadow: 0 0 0 8px #1e1b16, 0 34px 70px rgba(96, 52, 0, .32);
+  }
+  .phone img { width: 100%; height: 100%; display: block; }
+  .phone.mid { transform: translateY(-10px); }
+  .phone.side { transform: translateY(22px); }
+</style>
+</head>
+<body>
+  <svg class="art" viewBox="0 0 1200 760" preserveAspectRatio="none" aria-hidden="true">
+    <g stroke="#f7a21b" stroke-width="16" stroke-linecap="round">
+      <path d="M600 40v-70M820 110l50-50M380 110l-50-50M1000 270l70-20M200 270l-70-20" />
+    </g>
+    <circle cx="600" cy="300" r="300" fill="#ffd877" />
+    <path d="M90 130a34 34 0 0164-14 27 27 0 0144 22H78a20 20 0 0112-8z" fill="#fff6dd" />
+    <path d="M1020 110a30 30 0 0156-10 22 22 0 0138 20H1008a17 17 0 0112-10z" fill="#fff6dd" />
+    <path d="M0 560c180-90 380-90 560-30s420 50 640-40v270H0z" fill="#b9cd5f" />
+    <path d="M0 650c220-90 460-80 680-20s340 40 520-20v150H0z" fill="#8eab3d" />
+  </svg>
+  <div class="row">
+    <div class="phone side"><img src="hearts.jpg"></div>
+    <div class="phone mid"><img src="story.jpg"></div>
+    <div class="phone side"><img src="map-country.jpg"></div>
+  </div>
+</body>
+</html>

@@ -1,53 +1,114 @@
 <div align="center">
 
-<img src="design/app-icon.svg" alt="" width="96">
+<img src="docs/screenshots/hero.jpg" alt="Little Stories: your people, a story from a trip to Lisbon, and a map of where they're from" width="100%">
 
 # Little Stories
 
-A private journal of the people you've shared your life with,<br>
-and the little stories you lived together.
+**The people who shaped your life, and the moments you lived together.**<br>
+A private journal for the loves, crushes and friends you never want to forget.
 
 **[Open Little Stories →](https://littlestories.app.roberrini.com)**
+
+Free to use · Works on any phone · Nothing to install
 
 </div>
 
 ---
 
-## Hearts
+You remember the big moments. It's the small ones that slip away: the name of that café, the joke on the ferry, how old you both were, the way the evening ended.
 
-Everyone who's been part of your life, most recent first: a love, a crush, a summer, a friend. Give each of them a photo, the time you shared (one day, a while, or still going), how old they were when you met (a rough age or a birthday), where they're from, how much they mean to you on a single heart that fills from 1 to 10, a few words about them, and a way to reach them (Instagram, Facebook, LinkedIn, phone).
+Little Stories is a quiet place to keep them. Add the people who've been part of your life, write down what you lived together, and watch it all become your own map of memories.
 
-Their page gathers everything: the stories you shared, newest first, and every photo from them.
+## Everyone who mattered, in one place
 
-## Stories
+Your **Hearts** are the people you want to remember, most recent first. A great love, a summer, a two-week romance, a best friend: everyone gets a page of their own, with their photo, the time you shared, every story you lived together and every picture from those stories.
 
-The moments you want to remember: a date, a title if you like, what happened, who was there (one person, several, or no one), where it happened, a few words and photos. The timeline is grouped by month, with a little calendar on top to jump to any month of any year.
+The app never says "ex". It's a journal of people, whatever they became to you.
 
-## Map
+<p align="center">
+  <img src="docs/screenshots/hearts.jpg" alt="Hearts: the people in your journal, most recent first" width="240">
+  <img src="docs/screenshots/person.jpg" alt="A person's page with their age, tags and the time you shared" width="240">
+  <img src="docs/screenshots/person-stories.jpg" alt="Their photos and stories, and links to reach them" width="240">
+</p>
 
-A calm world map with each country grey, or coloured by how many people come from there, or how many stories happened there. Pinch or use the buttons to zoom, tap a country to see who and what is there.
+## Add someone in a minute
 
-## You
+You don't need the details to get started. Only a name is required, and you can fill in the rest whenever you like.
 
-A few words about yourself, and your journal in numbers: hearts, stories, countries and photos, the words you use most, stories per year, your average heart, your longest story and the person you've shared the most with.
+- **When:** one unforgettable day, a while, or still going.
+- **Age:** a rough age is enough. It reads "32 when you met (33 today)", and an exact birthday is optional.
+- **One heart that fills:** how much they meant to you, from 1 to 10.
+- **In a few words:** tap the words you've used before, pick from ideas like *comfy* or *chaotic*, or write your own.
+- **Stay in touch:** Instagram, Facebook, LinkedIn and phone, one tap away.
 
-## Sign in, or don't
+<p align="center">
+  <img src="docs/screenshots/person-editor.jpg" alt="Adding someone: dates, age and a heart that fills" width="240">
+  <img src="docs/screenshots/words.jpg" alt="Choosing a few words to describe them" width="240">
+</p>
 
-**Continue with Google**, or with **your email and a sign-in code**: your journal is kept in your account, private to you, and in sync across your devices. Photos are compressed on your phone before they're uploaded.
+## Write it down before it fades
 
-Prefer not to sign in? **Try it without an account** and everything stays on your device. Sign in later and you can move it into your account with one tap.
+**Stories** are simple notes: what happened, when, where and who was there. Add photos if you have them. A story can belong to one person, to several, or just to you.
+
+Your timeline runs month by month, with a little calendar on top to jump straight to any month of any year. Search finds a memory by a person, a place or a word.
+
+<p align="center">
+  <img src="docs/screenshots/stories.jpg" alt="Your stories, with a calendar to jump between months" width="240">
+  <img src="docs/screenshots/story.jpg" alt="A story with photos, the person it's with and the country" width="240">
+  <img src="docs/screenshots/story-editor.jpg" alt="Writing a story" width="240">
+</p>
+
+## See your life on a map
+
+Every country lights up as you fill your journal, deeper in colour the more it holds. Switch between where your people are from and where your stories happened, pinch to zoom, and tap a country to see who and what is there.
+
+<p align="center">
+  <img src="docs/screenshots/map.jpg" alt="A world map of where the people in your life are from" width="240">
+  <img src="docs/screenshots/map-country.jpg" alt="Zoomed in on France, with the people from there" width="240">
+  <img src="docs/screenshots/map-stories.jpg" alt="The same map showing where your stories happened" width="240">
+</p>
+
+## Your life, in little numbers
+
+**You** is where it all comes together: a few words about yourself, and your journal at a glance. How many people, stories, countries and photos. The words you use most. Your busiest years. Your longest story, and the person you've shared the most with.
+
+<p align="center">
+  <img src="docs/screenshots/you.jpg" alt="You: your notes and your journal in numbers" width="240">
+  <img src="docs/screenshots/you-stats.jpg" alt="Your most used words, stories per year and highlights" width="240">
+</p>
+
+## Private by design
+
+<img src="docs/screenshots/welcome.jpg" alt="Welcome screen: continue with Google, with email, or without an account" width="220" align="right">
+
+This is a journal, not a social network. There's no feed, no followers and no sharing.
+
+- **Your account, your journal.** Sign in with Google or your email, and your journal stays in sync across your devices. The database only lets each account read and write its own entries, and photos sit in private storage.
+- **Or no account at all.** Try it without signing in and everything stays on your device. If you sign in later, you can move it into your account with one tap.
+- **Yours to take with you.** Download everything you've written at any time.
+- **Works without signal.** Keep writing offline. Your changes are saved as soon as you're back online.
+
+<br clear="right">
 
 ## Install it like an app
 
-- **Android (Chrome):** open the app, tap ⋮, then **Add to Home screen** or **Install app**.
-- **iPhone (Safari):** tap **Share**, then **Add to Home Screen**.
+Little Stories runs in your browser and installs on your phone's home screen:
 
-It opens full screen and keeps working offline.
+- **iPhone (Safari):** tap **Share**, then **Add to Home Screen**.
+- **Android (Chrome):** open the app, tap ⋮, then **Add to Home screen** or **Install app**.
+
+It opens full screen, like any other app.
+
+**[Start your journal →](https://littlestories.app.roberrini.com)**
+
+---
+
+<sub>Everyone in these screenshots is made up, and the pictures are illustrations.</sub>
 
 ## License
 
-[MIT](LICENSE). The font (Plus Jakarta Sans) keeps its SIL Open Font License; the map data is Natural Earth (public domain) via `world-atlas`.
+[MIT](LICENSE): use, change and share the code however you like. The font (Plus Jakarta Sans) keeps its SIL Open Font License, and the map data is Natural Earth (public domain) via `world-atlas`.
 
 ## For developers
 
-Built with Vite, React and TypeScript, with Supabase for sign-in, storage and photos, deployed on Vercel. Setup (Supabase, Google, the email code, Vercel and the OVH subdomain), architecture and the Android plan are in **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+Built with Vite, React and TypeScript, with Supabase for sign-in, storage and photos, and deployed on Vercel. Setup, architecture, deployment and the Android plan are in **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.

@@ -98,6 +98,16 @@ The web app is a complete PWA: manifest with `any` and `maskable` icons, standal
 
 As for Workout Journal, the recommended wrapper is a **Trusted Web Activity** generated with [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap): `npx @bubblewrap/cli init --manifest https://littlestories.app.roberrini.com/manifest.webmanifest`, then `bubblewrap build`. Copy `android/assetlinks.template.json` to `public/.well-known/assetlinks.json` with the package name and the signing key's SHA-256, then redeploy. Google sign-in and the email code work unchanged inside it.
 
+## Screenshots
+
+The images in `docs/screenshots` come from a made-up journal: `scripts/screenshots/plan.mjs` holds the demo people, stories and the list of screens, `art.mjs` draws the "photos" and portraits, and `hero.html` lays out the header image. Nobody in it is real, and it never touches a real account: `shoot.swift` drives the system WebKit at phone size with throwaway storage, so it runs on macOS only. With the dev server on port 5174, run:
+
+```bash
+sh scripts/screenshots/run.sh
+```
+
+Set the Supabase env vars in `.env.local` so the welcome screen shows the sign-in buttons enabled.
+
 ## Design
 
 Warm paper background, flat white cards with large radii, near-black text, and colour as accents only, following the moodboard: sunny yellow for actions (the + button, Save), coral for hearts and the people map, periwinkle for the stories map, cocoa, olive and taupe in the charts. Each person gets a stable accent colour from their id (avatar, profile date). The illustration (`src/components/Scene.tsx`) is a smiling heart rising over hills, in day, dusk and blush variants. Desktop is the same single column, centered.
