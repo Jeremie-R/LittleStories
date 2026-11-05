@@ -1,5 +1,5 @@
-import { ageOn, daysBetween, monthKey } from './dates'
-import type { Data, Person, Story } from './types'
+import { ageOn, daysBetween, formatRange, monthKey } from './dates'
+import type { Data, Period, Person, Story } from './types'
 
 /** Number of accent colours (`.accent-0` … in components.css). */
 export const ACCENTS = 8
@@ -26,6 +26,20 @@ export function ageLine({ born, start }: Pick<Person, 'born' | 'start'>): string
   return met === today ? `${met} when you met` : `${met} when you met (${today} today)`
 }
 
+/** Each stretch of time with someone, oldest first. */
+export const periodsOf = (p: Pick<Person, 'start' | 'end' | 'periods'>): Period[] => (p.periods?.length ? p.periods : [{ start: p.start, end: p.end }])
+
+/** Days together, across every period. */
+export const totalDays = (p: Person) => periodsOf(p).reduce((days, t) => days + (t.start ? daysBetween(t.start, t.end) : 0), 0)
+
+/** The latest stretch for lists, with how many there have been: "Feb 2023 – Aug 2024 · 2×". */
+export function latestRange(p: Person): string {
+  const periods = periodsOf(p)
+  const last = periods[periods.length - 1]
+  const range = formatRange(last.start, last.end, true)
+  return range && periods.length > 1 ? `${range} · ${periods.length}×` : range
+}
+
 export interface PersonGroup {
   label: string
   people: Person[]
@@ -45,9 +59,10 @@ export function groupPeople(people: Person[]): PersonGroup[] {
     else if (!day) undated.push(p)
     else years.set(day.slice(0, 4), [...(years.get(day.slice(0, 4)) ?? []), p])
   }
+  const latestStart = (p: Person) => periodsOf(p).at(-1)?.start ?? ''
   const byDay = (a: Person, b: Person) => (b.end ?? b.start ?? '').localeCompare(a.end ?? a.start ?? '') || b.createdAt - a.createdAt
   return [
-    { label: 'Now', people: now.sort((a, b) => b.start!.localeCompare(a.start!)) },
+    { label: 'Now', people: now.sort((a, b) => latestStart(b).localeCompare(latestStart(a))) },
     ...[...years.keys()].sort().reverse().map((year) => ({ label: year, people: years.get(year)!.sort(byDay) })),
     { label: 'No date', people: undated.sort((a, b) => b.createdAt - a.createdAt) },
   ].filter((g) => g.people.length > 0)
@@ -130,7 +145,7 @@ export function computeStats(data: Data): Stats {
   let longest: Stats['longest'] = null
   for (const person of data.people) {
     if (!person.start) continue
-    const days = daysBetween(person.start, person.end)
+    const days = totalDays(person)
     if (!longest || days > longest.days) longest = { person, days }
   }
 

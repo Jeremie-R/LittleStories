@@ -793,6 +793,30 @@
 
 /* ---------- Tags and people pickers ---------- */
 
+.period {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.period + .period {
+  margin-top: 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.period__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--ink-2);
+  font: 650 14px var(--font);
+}
+
+.period__add {
+  align-self: flex-start;
+}
+
 .tag-quick {
   margin-top: 10px;
 }

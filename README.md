@@ -23,6 +23,8 @@ Little Stories is a quiet place to keep them. Add the people who've been part of
 
 Your **Hearts** are the people you want to remember, most recent first. A great love, a summer, a two-week romance, a best friend: everyone gets a page of their own, with their photo, the time you shared, every story you lived together and every picture from those stories.
 
+Paste your song, a video or any link into **Shared things**, and it appears with its cover and title. YouTube and Spotify links work straight away.
+
 The app never says "ex". It's a journal of people, whatever they became to you.
 
 <p align="center">
@@ -35,7 +37,7 @@ The app never says "ex". It's a journal of people, whatever they became to you.
 
 You don't need the details to get started. Only a name is required, and you can fill in the rest whenever you like.
 
-- **When:** one unforgettable day, a while, or still going.
+- **When:** one unforgettable day, a while, or still going. Came back to each other? Add another time.
 - **Age:** a rough age is enough. It reads "32 when you met (33 today)", and an exact birthday is optional.
 - **One heart that fills:** how much they meant to you, from 1 to 10.
 - **In a few words:** tap the words you've used before, pick from ideas like *comfy* or *chaotic*, or write your own.

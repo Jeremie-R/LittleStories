@@ -13,21 +13,30 @@ import { deletePerson, savePerson, useData } from '../data/store'
 import { useAutosize, useBack } from '../lib/hooks'
 import { facebookLink, instagramHandle, linkedinLink } from '../lib/links'
 import { usedTags } from '../lib/tags'
-import { newId, type Person } from '../lib/types'
+import { periodsOf } from '../lib/journal'
+import { newId, type Period, type Person } from '../lib/types'
 
 type When = 'while' | 'day'
 
-function tidy(draft: Person, when: When, age: AgeDraft): Person {
-  let { start, end } = draft
-  if (when === 'day') end = start
-  // Dates entered the wrong way round: swap them rather than complain.
-  if (start && end && end < start) [start, end] = [end, start]
+/** In order and without empty ones. Dates entered the wrong way round are swapped rather than complained about. */
+function tidyPeriods(periods: Period[], when: When): Period[] {
+  const entered = when === 'day' ? [{ start: periods[0].start, end: periods[0].start }] : periods
+  return entered
+    .filter((p) => p.start || p.end)
+    .map((p) => (p.start && p.end && p.end < p.start ? { start: p.end, end: p.start } : p))
+    .sort((a, b) => (a.start ?? a.end ?? '').localeCompare(b.start ?? b.end ?? ''))
+}
+
+function tidy(draft: Person, when: When, entered: Period[], age: AgeDraft): Person {
+  const periods = tidyPeriods(entered, when)
+  const start = periods[0]?.start
   return {
     ...draft,
     name: draft.name.trim(),
     about: draft.about?.trim() || undefined,
-    start: start || undefined,
-    end: end || undefined,
+    start,
+    end: periods[periods.length - 1]?.end,
+    periods: periods.length > 1 ? periods : undefined,
     born: bornFrom(age, start),
     instagram: instagramHandle(draft.instagram),
     facebook: facebookLink(draft.facebook),
@@ -47,6 +56,7 @@ export function PersonEditor() {
 
   const [draft, setDraft] = useState<Person>(() => existing ?? { id: newId(), name: '', tags: [], createdAt: Date.now(), updatedAt: Date.now() })
   const [when, setWhen] = useState<When>(existing?.start && existing.start === existing.end ? 'day' : 'while')
+  const [periods, setPeriods] = useState<Period[]>(() => (existing ? periodsOf(existing) : [{}]))
   const [age, setAge] = useState<AgeDraft>(() => ageDraft(existing?.born, existing?.start))
   const about = useAutosize(draft.about ?? '')
   const known = useMemo(() => usedTags(data), [data])
@@ -55,9 +65,12 @@ export function PersonEditor() {
   if (id && !existing) return <Navigate to="/" replace />
 
   const set = (patch: Partial<Person>) => setDraft((d) => ({ ...d, ...patch }))
+  const setPeriod = (index: number, patch: Period) => setPeriods((all) => all.map((p, i) => (i === index ? { ...p, ...patch } : p)))
+  const last = periods[periods.length - 1]
+  const firstMet = periods.flatMap((p) => (p.start ? [p.start] : [])).sort()[0]
 
   const save = () => {
-    const person = tidy(draft, when, age)
+    const person = tidy(draft, when, periods, age)
     drafts.keep(person.photo ? [person.photo] : [])
     savePerson(person)
     if (existing) back()
@@ -108,29 +121,47 @@ export function PersonEditor() {
 
       <section className="form-card">
         <h2 className="form-card__title">When</h2>
-        <Segmented<When>
-          label="When"
-          size="sm"
-          value={when}
-          onChange={setWhen}
-          options={[
-            { value: 'while', label: 'A while' },
-            { value: 'day', label: 'One day' },
-          ]}
-        />
+        {periods.length === 1 && (
+          <Segmented<When>
+            label="When"
+            size="sm"
+            value={when}
+            onChange={setWhen}
+            options={[
+              { value: 'while', label: 'A while' },
+              { value: 'day', label: 'One day' },
+            ]}
+          />
+        )}
         {when === 'day' ? (
-          <DateField label="Day" value={draft.start} onChange={(start) => set({ start })} clearable />
+          <DateField label="Day" value={periods[0].start} onChange={(start) => setPeriod(0, { start })} clearable />
         ) : (
-          <>
-            <DateField label="From" value={draft.start} onChange={(start) => set({ start })} clearable />
-            <DateField label="Until" value={draft.end} onChange={(end) => set({ end })} placeholder="Still going" clearable />
-          </>
+          periods.map((period, i) => (
+            <div key={i} className="period">
+              {i > 0 && (
+                <div className="period__head">
+                  <span>{i === 1 ? 'Then again' : 'And again'}</span>
+                  <button type="button" className="text-btn" onClick={() => setPeriods((all) => all.filter((_, n) => n !== i))}>
+                    Remove
+                  </button>
+                </div>
+              )}
+              <DateField label="From" value={period.start} onChange={(start) => setPeriod(i, { start })} clearable />
+              <DateField label="Until" value={period.end} onChange={(end) => setPeriod(i, { end })} placeholder="Still going" clearable />
+            </div>
+          ))
+        )}
+        {when === 'while' && last.start && last.end && (
+          <button type="button" className="chip chip--add period__add" onClick={() => setPeriods((all) => [...all, {}])}>
+            <Icon name="plus" size={14} strokeWidth={2.4} />
+            Add another time
+          </button>
         )}
       </section>
 
       <section className="form-card">
         <h2 className="form-card__title">Age</h2>
-        <AgeField value={age} onChange={setAge} met={draft.start} />
+        <AgeField value={age} onChange={setAge} met={firstMet} />
       </section>
 
       <section className="form-card">

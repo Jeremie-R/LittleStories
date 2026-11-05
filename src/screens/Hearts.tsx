@@ -8,8 +8,8 @@ import { Icon } from '../components/Icon'
 import { Scene } from '../components/Scene'
 import { useData } from '../data/store'
 import { countryName, flag } from '../lib/countries'
-import { ageOn, formatRange } from '../lib/dates'
-import { groupPeople, storyCounts } from '../lib/journal'
+import { ageOn } from '../lib/dates'
+import { groupPeople, latestRange, storyCounts } from '../lib/journal'
 import type { Person } from '../lib/types'
 
 export function Hearts() {
@@ -96,7 +96,7 @@ export function Hearts() {
 }
 
 function PersonCard({ person, stories }: { person: Person; stories: number }) {
-  const range = formatRange(person.start, person.end, true)
+  const range = latestRange(person)
   return (
     <Link to={`/people/${person.id}`} className="person-card">
       <Avatar person={person} size={60} />

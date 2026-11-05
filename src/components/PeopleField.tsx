@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { formatRange } from '../lib/dates'
-import { sortPeople } from '../lib/journal'
+import { latestRange, sortPeople } from '../lib/journal'
 import type { Person } from '../lib/types'
 import { Avatar } from './Avatar'
 import { Icon } from './Icon'
@@ -54,7 +53,7 @@ export function PeopleField({ people, value, onChange }: { people: Person[]; val
               <Avatar person={p} size={40} />
               <span className="pick-row__name">
                 {p.name}
-                {(p.start || p.end) && <small>{formatRange(p.start, p.end, true)}</small>}
+                {(p.start || p.end) && <small>{latestRange(p)}</small>}
               </span>
               <span className="check">{value.includes(p.id) && <Icon name="check" size={16} strokeWidth={2.8} />}</span>
             </button>

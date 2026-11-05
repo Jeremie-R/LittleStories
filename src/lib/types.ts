@@ -1,15 +1,34 @@
+/** One stretch of time together, as YYYY-MM-DD. The same start and end is a single day; no end is still going. */
+export interface Period {
+  start?: string
+  end?: string
+}
+
+/** A song, a video or any link you share with someone. */
+export interface SharedThing {
+  id: string
+  url: string
+  title: string
+  /** Preview picture, on the site it came from. */
+  image?: string
+  /** The site's icon, shown when there's no picture. */
+  icon?: string
+  /** "youtube.com", "Spotify"… */
+  site: string
+  addedAt: number
+}
+
 /** Someone you've shared part of your life with. The app calls them "hearts". */
 export interface Person {
   id: string
   name: string
   /** Photo id (see data/photos.ts). */
   photo?: string
-  /**
-   * When you were together, as YYYY-MM-DD. The same start and end is a single day;
-   * a start with no end is still going.
-   */
+  /** The whole story: the first start, and the last end (none while it's still going). */
   start?: string
   end?: string
+  /** Every stretch of time, oldest first, for people who came back. Absent when there's only one. */
+  periods?: Period[]
   about?: string
   /** "YYYY-MM-DD", or just "YYYY" when you only know roughly how old they were. */
   born?: string
@@ -24,6 +43,7 @@ export interface Person {
   facebook?: string
   linkedin?: string
   phone?: string
+  shared?: SharedThing[]
   createdAt: number
   updatedAt: number
 }

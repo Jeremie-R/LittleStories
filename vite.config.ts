@@ -34,8 +34,38 @@ function serviceWorker(): Plugin {
   }
 }
 
+// Runs the Vercel function in api/ on the dev server too.
+function previewApi(): Plugin {
+  return {
+    name: 'little-stories-preview-api',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/api/preview', async (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405
+          res.end()
+          return
+        }
+        const chunks: Buffer[] = []
+        for await (const chunk of req) chunks.push(chunk as Buffer)
+        const { POST } = await server.ssrLoadModule('/api/preview.ts')
+        const response: Response = await POST(
+          new Request('http://localhost/api/preview', {
+            method: 'POST',
+            headers: { 'sec-fetch-site': String(req.headers['sec-fetch-site'] ?? '') },
+            body: Buffer.concat(chunks).toString(),
+          }),
+        )
+        res.statusCode = response.status
+        res.setHeader('Content-Type', 'application/json')
+        res.end(await response.text())
+      })
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), serviceWorker()],
+  plugins: [react(), serviceWorker(), previewApi()],
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   server: { host: true },
 })

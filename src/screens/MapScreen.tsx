@@ -7,8 +7,7 @@ import { StoryCard } from '../components/StoryCard'
 import { WorldMap } from '../components/WorldMap'
 import { useData } from '../data/store'
 import { countryName, flag } from '../lib/countries'
-import { formatRange } from '../lib/dates'
-import { countByCountry, sortPeople, sortStories, type MapMode } from '../lib/journal'
+import { countByCountry, latestRange, sortPeople, sortStories, type MapMode } from '../lib/journal'
 
 const LEGEND = [
   { level: 1, label: '1' },
@@ -117,7 +116,7 @@ function CountryPanel({ code, mode, onClose }: { code: string; mode: MapMode; on
             <Avatar person={p} size={40} />
             <span className="mini-person__body">
               <b>{p.name}</b>
-              {(p.start || p.end) && <span>{formatRange(p.start, p.end, true)}</span>}
+              {(p.start || p.end) && <span>{latestRange(p)}</span>}
             </span>
             <Icon name="chevron" size={18} />
           </Link>

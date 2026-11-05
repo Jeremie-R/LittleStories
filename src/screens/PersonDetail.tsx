@@ -6,12 +6,13 @@ import { HeartMeter } from '../components/HeartMeter'
 import { Icon } from '../components/Icon'
 import { Lightbox } from '../components/Lightbox'
 import { Photo } from '../components/Photo'
+import { SharedThings } from '../components/SharedThings'
 import { StoryCard } from '../components/StoryCard'
 import { useData } from '../data/store'
 import { countryName, flag } from '../lib/countries'
-import { daysBetween, formatDuration, formatRange } from '../lib/dates'
+import { formatDuration, formatRange } from '../lib/dates'
 import { useBack } from '../lib/hooks'
-import { accentOf, ageLine, storiesOf } from '../lib/journal'
+import { accentOf, ageLine, periodsOf, storiesOf, totalDays } from '../lib/journal'
 import { facebookLink, linkedinLink } from '../lib/links'
 
 export function PersonDetail() {
@@ -25,8 +26,9 @@ export function PersonDetail() {
   const stories = storiesOf(data, person.id)
   const photos = stories.flatMap((s) => s.photos)
   const others = data.people.filter((p) => p.id !== person.id)
-  const range = formatRange(person.start, person.end)
-  const duration = person.start && person.end !== person.start ? formatDuration(daysBetween(person.start, person.end)) : null
+  const periods = periodsOf(person)
+  const ranges = periods.map((p) => formatRange(p.start, p.end, periods.length > 1)).filter(Boolean)
+  const duration = person.start && (periods.length > 1 || person.end !== person.start) ? formatDuration(totalDays(person)) : null
   const age = ageLine(person)
   const phone = person.phone?.replace(/[^\d+]/g, '')
   const facebook = facebookLink(person.facebook)
@@ -45,7 +47,11 @@ export function PersonDetail() {
 
       <section className="profile">
         <Avatar person={person} size={148} className="profile__avatar" />
-        {range && <p className="profile__date">{range}</p>}
+        {ranges.map((range, i) => (
+          <p key={i} className="profile__date">
+            {range}
+          </p>
+        ))}
         <h1 className="title title--xl title--center">{person.name || 'Someone'}</h1>
         {age && <p className="profile__age">{age}</p>}
         {person.tags.length > 0 && (
@@ -123,6 +129,8 @@ export function PersonDetail() {
           )}
         </div>
       )}
+
+      <SharedThings person={person} />
 
       {photos.length > 0 && (
         <section>

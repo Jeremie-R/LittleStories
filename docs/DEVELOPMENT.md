@@ -22,14 +22,19 @@ Without Supabase env vars the app runs in **device-only mode**: "Try it without 
 | Sign-in | Supabase Auth: Google (redirect) and a code by email (the code screen takes 6 to 10 digits, so it follows the project's OTP length). Loaded lazily, only when configured (`src/auth/AuthProvider.tsx`). |
 | Photos | Compressed in the browser (`src/data/photos.ts`): 1600 px WebP for stories, 720 px square for avatars, JPEG where the browser can't write WebP. Kept in IndexedDB, uploaded to a private Supabase Storage bucket when saved. |
 | Offline | `sw.template.js` → `dist/sw.js` precaches the app shell and icons. Signed in, the journal is cached in localStorage and changes wait in an outbox until they're saved, so the app works without signal. |
+| Link previews | `api/preview.ts`, a Vercel function that finds a title and picture for a pasted link. YouTube, Spotify, SoundCloud and Vimeo answer through oEmbed (no accounts or keys); other sites through their Open Graph tags, then their icon. The dev server runs the same file (`vite.config.ts`). |
 | Map | `src/components/WorldMap.tsx`: Natural Earth 1:50m countries (`world-atlas`), Equal Earth projection (`d3-geo`), pinch/drag zoom (`d3-zoom`). The map screen and its 750 kB of shapes load only when the Map tab is opened. |
 
 Data model (`src/lib/types.ts`):
-- **Person** ("a heart" in the app): name, photo, start and end dates (the same day twice = one day, no end = still going), when they were born (`born`: a date, or only a year worked out from a rough age), about, country, rating 1–10, tags, Instagram, Facebook, LinkedIn, phone.
+- **Person** ("a heart" in the app): name, photo, start and end dates (the same day twice = one day, no end = still going), `periods` for people who came back (`start` and `end` then span the whole story, and only `periods` says how long you were together), when they were born (`born`: a date, or only a year worked out from a rough age), about, country, rating 1–10, tags, Instagram, Facebook, LinkedIn, phone, and `shared` links (title, picture, icon, site).
 - **Story**: date, optional title, text, country, tags, the people it's with (any number), photos.
 - **Profile**: what you write about yourself on the You tab.
 
 Tags are free text, shared between people and stories, and the app calls them "words" ("In a few words"). The ones already used are one tap away; "Add a word" opens a popup with those, a short list of ideas (`src/lib/tags.ts`) and a field for your own.
+
+Shared things keep the address of their picture rather than a copy, so a picture can disappear from its site: the card then falls back to the site's icon, then its first letter. They load with `no-referrer`.
+
+`api/preview.ts` fetches addresses pasted by users, so it must stay careful: it refuses anything but public http(s) sites on standard ports (checking what the name resolves to, and every redirect again), limits time and size, and returns only a title and picture addresses. It takes the address by POST, which keeps pasted links out of request logs and away from the service worker. If it can't help, the app still saves the link, with the domain as title.
 
 Deleting someone deletes the stories that were only theirs; stories shared with others stay, without them.
 
