@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Privacy · Little Stories</title>
+    <meta name="description" content="How Little Stories handles your journal." />
+    <meta name="theme-color" content="#f3f1ec" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 32px 20px 64px;
+        background: #f3f1ec;
+        color: #1e1b16;
+        font: 400 16px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      }
+      h1 {
+        margin: 24px 0 4px;
+        font-size: 32px;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+      h2 {
+        margin: 32px 0 6px;
+        font-size: 18px;
+      }
+      p,
+      ul {
+        margin: 0 0 12px;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      a {
+        color: inherit;
+      }
+      .date {
+        color: #6c665c;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="/">← Little Stories</a>
+    <h1>Privacy</h1>
+    <p class="date">Last updated: 6 November 2026</p>
+
+    <p>Little Stories is a personal journal, so here is plainly what happens to what you write in it. It's a small project run by Jeremie Roberrini.</p>
+
+    <h2>What the app keeps</h2>
+    <ul>
+      <li>What you enter: people, stories, tags, dates, links, notes about yourself and photos.</li>
+      <li>If you sign in: your email address, and with Google your name and profile picture. Google is used to sign you in and for nothing else.</li>
+    </ul>
+
+    <h2>Where it's kept</h2>
+    <ul>
+      <li><b>Without an account:</b> everything stays in your browser, on your device. Clearing your browser's data erases it.</li>
+      <li><b>With an account:</b> your journal and photos are stored with <a href="https://supabase.com">Supabase</a> in Ireland. The app is hosted on <a href="https://vercel.com">Vercel</a>, and sign-in emails are sent by <a href="https://resend.com">Resend</a>.</li>
+    </ul>
+
+    <h2>Who can see it</h2>
+    <p>The app only lets each account read and write its own journal, and photos sit in private storage. There's no feed and no sharing. Your journal is not end-to-end encrypted, though, so the person running the service could technically reach the stored data. That access isn't used, except if you ask for help with your own account.</p>
+    <p>Your journal is never sold or used for advertising, and the app has no ads and no analytics.</p>
+
+    <h2>Links you share</h2>
+    <p>When you paste a link into Shared things, its address goes to the app's server, which fetches a title and picture from that site. The picture then loads from that site when you view it.</p>
+
+    <h2>Your choices</h2>
+    <ul>
+      <li>You can edit or delete anything you've written at any time, and download a copy from the You tab.</li>
+      <li>To delete your account and everything in it, email <a href="mailto:contact@roberrini.com">contact@roberrini.com</a>.</li>
+    </ul>
+
+    <h2>Questions</h2>
+    <p>Write to <a href="mailto:contact@roberrini.com">contact@roberrini.com</a>.</p>
+  </body>
+</html>

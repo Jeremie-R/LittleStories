@@ -3,7 +3,7 @@
 import { createClient, type User } from '@supabase/supabase-js'
 import { normalizeData, type Data, type Person, type Profile, type Story } from '../lib/types'
 import type { Backend } from './backend'
-import { supabaseConfig } from './config'
+import { GOOGLE_CLIENT_ID, supabaseConfig } from './config'
 import { clearPhotos, readPhoto } from './photos'
 
 const supabase = createClient(supabaseConfig!.url, supabaseConfig!.key, {
@@ -29,12 +29,41 @@ export function watchUser(callback: (user: AccountUser | null) => void) {
   return () => data.subscription.unsubscribe()
 }
 
-/** Leaves for Google's sign-in page and comes back signed in (the session is picked up from the URL). */
+const GOOGLE_NONCE_KEY = 'ls:google-nonce'
+
+/**
+ * Leaves for Google's sign-in page. Google comes straight back to this site with a signed token,
+ * rather than going through Supabase, so its screen names our domain and not <project>.supabase.co.
+ * The nonce ties the token to this browser: Google gets its hash, Supabase checks it against the original.
+ */
 export async function signInWithGoogle() {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: location.origin + '/', queryParams: { prompt: 'select_account' } },
-  })
+  const nonce = crypto.randomUUID()
+  localStorage.setItem(GOOGLE_NONCE_KEY, nonce)
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(nonce))
+  const url = new URL('https://accounts.google.com/o/oauth2/v2/auth')
+  url.search = new URLSearchParams({
+    client_id: GOOGLE_CLIENT_ID,
+    redirect_uri: location.origin + '/',
+    response_type: 'id_token',
+    scope: 'openid email profile',
+    nonce: [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, '0')).join(''),
+    prompt: 'select_account',
+  }).toString()
+  location.assign(url.href)
+}
+
+/** On the way back from Google: turns its token into a session. Does nothing on any other page load. */
+export async function finishGoogleSignIn() {
+  const params = new URLSearchParams(location.hash.slice(1))
+  const token = params.get('id_token')
+  if (!token && !params.has('error')) return
+  history.replaceState(null, '', location.pathname)
+  const nonce = localStorage.getItem(GOOGLE_NONCE_KEY)
+  localStorage.removeItem(GOOGLE_NONCE_KEY)
+  // Closing Google's page without choosing an account isn't a failure.
+  if (params.get('error') === 'access_denied') return
+  if (!token || !nonce) throw new Error('Google sign-in could not be completed')
+  const { error } = await supabase.auth.signInWithIdToken({ provider: 'google', token, nonce })
   if (error) throw error
 }
 

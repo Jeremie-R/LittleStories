@@ -17,12 +17,12 @@ function describe(error: unknown, step: Step): string {
 
 /** Sign-in: Google, a code sent by email, or no account at all. With `upgrade`, it's reached from You to sign in later. */
 export function Welcome({ upgrade = false }: { upgrade?: boolean }) {
-  const { cloudEnabled, signInWithGoogle, sendEmailCode, verifyEmailCode, continueWithoutAccount } = useAuth()
+  const { cloudEnabled, googleFailed, signInWithGoogle, sendEmailCode, verifyEmailCode, continueWithoutAccount } = useAuth()
   const [step, setStep] = useState<Step>('start')
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState(googleFailed ? "Couldn't sign in with Google. Please try again." : '')
   const [wait, setWait] = useState(0)
 
   useEffect(() => {
@@ -108,7 +108,10 @@ export function Welcome({ upgrade = false }: { upgrade?: boolean }) {
               ? 'Sign-in isn’t set up yet. You can try Little Stories with everything kept on this device.'
               : upgrade
                 ? 'After signing in, you can move the stories kept on this device into your account.'
-                : 'Your journal is private: only you can read it. Without an account, it stays on this device only.'}
+                : 'Your journal is tied to your account. Without an account, it stays on this device only.'}{' '}
+            <a className="link" href="/privacy.html">
+              Privacy
+            </a>
           </p>
         </div>
       )}

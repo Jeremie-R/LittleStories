@@ -59,13 +59,17 @@ Deleting someone deletes the stories that were only theirs; stories shared with 
 
 ### 2. Google sign-in
 
-1. [Google Cloud Console](https://console.cloud.google.com) → **Google Auth Platform → Clients → Create client → Web application**.
-   - Authorized redirect URI: `https://dydywowsexvxmaiuqlvi.supabase.co/auth/v1/callback`. This is the one that matters: Google returns to Supabase, which then returns to the app. A missing or different value shows up as `redirect_uri_mismatch`.
-   - Authorized JavaScript origins: `https://littlestories.app.roberrini.com`, `https://little-stories-wcn2.vercel.app`, `http://localhost:5174`
-2. **Branding**: app name "Little Stories", support email, and `supabase.co` plus `roberrini.com` as authorized domains.
-3. Supabase → **Authentication → Sign In / Providers → Google**: enable it and paste the client ID and secret. They belong here only: the app and Vercel never need them.
+The app has its own Google Cloud project, **Little Stories** (`little-stories-513907`). A project has a single consent screen, so apps shouldn't share one.
 
-Google's consent screen says "continue to `dydywowsexvxmaiuqlvi.supabase.co`". Showing our own domain there needs Supabase's custom domain add-on (paid).
+Sign-in doesn't go through Supabase's redirect. The button sends people to Google, Google comes straight back to the site with a signed ID token, and the app hands it to Supabase (`signInWithGoogle` and `finishGoogleSignIn` in `src/data/supabase.ts`). This is why Google's screen names `roberrini.com` rather than `<project-ref>.supabase.co`, without Supabase's paid custom domain. It also means no client secret is used.
+
+1. [Google Cloud Console](https://console.cloud.google.com) → **Google Auth Platform → Clients → Create client → Web application**.
+   - Authorized JavaScript origins: `https://littlestories.app.roberrini.com`, `https://little-stories-wcn2.vercel.app`, `http://localhost:5174`
+   - Authorized redirect URIs: the same three, each with a trailing `/`. A missing or different value shows up as `redirect_uri_mismatch`.
+2. Put the client ID in `GOOGLE_CLIENT_ID` (`src/data/config.ts`). It's public.
+3. Supabase → **Authentication → Sign In / Providers → Google**: enable it and add the client ID to **Client IDs**. Supabase only accepts tokens issued to the IDs listed there.
+
+Showing "Little Stories" instead of `roberrini.com` needs Google's brand verification: a privacy policy page, proof of owning the domain in Search Console, and a few business days.
 
 ### 3. Sign-in code by email
 

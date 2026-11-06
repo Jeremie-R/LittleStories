@@ -219,6 +219,12 @@ img {
   text-wrap: pretty;
 }
 
+.link {
+  color: inherit;
+  font-weight: 600;
+  text-underline-offset: 2px;
+}
+
 .form-error {
   color: var(--danger);
   font: 500 14px/1.4 var(--font);

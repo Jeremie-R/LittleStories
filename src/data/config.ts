@@ -8,6 +8,9 @@ export const supabaseConfig = url && key ? { url, key } : null
 
 export const cloudEnabled = supabaseConfig !== null
 
+/** The Google sign-in client, from the "Little Stories" Google Cloud project. Public by nature. */
+export const GOOGLE_CLIENT_ID = '963263567154-umv360i7hi5f5uae1r36jpr5o9s6fuvl.apps.googleusercontent.com'
+
 /** Digits Supabase can put in an email sign-in code. The exact length is a project setting. */
 export const CODE_MIN = 6
 export const CODE_MAX = 10

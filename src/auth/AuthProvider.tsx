@@ -17,6 +17,8 @@ export type AuthState =
 interface AuthContextValue {
   state: AuthState
   cloudEnabled: boolean
+  /** Coming back from Google didn't end in a session. */
+  googleFailed: boolean
   signInWithGoogle: () => Promise<void>
   sendEmailCode: (email: string) => Promise<void>
   verifyEmailCode: (email: string, code: string) => Promise<void>
@@ -40,6 +42,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(() => (cloudEnabled ? { status: 'loading' } : idleState()))
+  const [googleFailed, setGoogleFailed] = useState(false)
   const cloud = useRef<CloudModule | null>(null)
 
   useEffect(() => {
@@ -47,9 +50,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false
     let unwatch = () => {}
     import('../data/supabase')
-      .then((mod) => {
+      .then(async (mod) => {
         if (cancelled) return
         cloud.current = mod
+        // Before watching, so the welcome screen doesn't flash while Google's token is being checked.
+        await mod.finishGoogleSignIn().catch((error) => {
+          console.error('Google sign-in failed', error)
+          setGoogleFailed(true)
+        })
+        if (cancelled) return
         unwatch = mod.watchUser((user) => setState(user ? { status: 'signedIn', user } : idleState()))
       })
       .catch((error) => {
@@ -106,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ state, cloudEnabled, signInWithGoogle, sendEmailCode, verifyEmailCode, continueWithoutAccount, signOut, importDeviceData }}
+      value={{ state, cloudEnabled, googleFailed, signInWithGoogle, sendEmailCode, verifyEmailCode, continueWithoutAccount, signOut, importDeviceData }}
     >
       {children}
     </AuthContext.Provider>
